@@ -1,4 +1,4 @@
-package com.azhen;
+package com.azhen.browser;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
