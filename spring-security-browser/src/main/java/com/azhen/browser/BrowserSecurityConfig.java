@@ -1,5 +1,7 @@
 package com.azhen.browser;
 
+import com.azhen.browser.authentication.MyAuthenctiationFailureHandler;
+import com.azhen.browser.authentication.MyAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -17,12 +19,18 @@ import static com.azhen.core.properties.SecurityConstants.DEFAULT_UNAUTHENTICATI
 public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private SecurityProperties securityProperties;
+	@Autowired
+	private MyAuthenticationSuccessHandler authenticationSuccessHandler;
+	@Autowired
+	private MyAuthenctiationFailureHandler authenctiationFailureHandler;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.formLogin()
 				.loginPage(DEFAULT_UNAUTHENTICATION_URL)
 				.loginProcessingUrl(DEFAULT_LOGIN_PROCESSING_URL_FORM)
+				.successHandler(authenticationSuccessHandler)
+				.failureHandler(authenctiationFailureHandler)
 				.and()
 				.authorizeRequests()
 				.antMatchers(DEFAULT_UNAUTHENTICATION_URL, securityProperties.getBrowser().getLoginPage()).permitAll()
