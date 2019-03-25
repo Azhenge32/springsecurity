@@ -15,7 +15,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import java.util.Map;
 
 /**
- * @author zhailiang
+ * 模板方法设计模式
  *
  */
 public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> implements ValidateCodeProcessor {
@@ -39,6 +39,10 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 	 */
 	@Override
 	public void create(ServletWebRequest request) throws Exception {
+		/**
+		 * 生成验证码作为一个前提步骤，实现类保存在Map<String, ValidateCodeGenerator> validateCodeGenerators中
+		 * 类似于生产者，消费者
+		 */
 		C validateCode = generate(request);
 		save(request, validateCode);
 		send(request, validateCode);
