@@ -34,7 +34,6 @@ public class BrowserSecurityBeanConfig {
 		return new ImoocExpiredSessionStrategy(securityProperties.getBrowser().getSession().getSessionInvalidUrl());
 	}
 
-	// TODO 配置登出成功处理器
 	@Bean
 	@ConditionalOnMissingBean(LogoutSuccessHandler.class)
 	public LogoutSuccessHandler logoutSuccessHandler(){

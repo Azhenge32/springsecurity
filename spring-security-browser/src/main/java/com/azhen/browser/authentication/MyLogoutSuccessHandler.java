@@ -26,7 +26,6 @@ public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         log.info("登出成功");
-        // TODO 如果配置了logoutUrl,则重定向到Url，否则返回json登出成功
         if (!StringUtils.endsWithIgnoreCase(logoutUrl, ".html")) {
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().write(objectMapper.writeValueAsString(new SimpleResponse("登出陈工")));

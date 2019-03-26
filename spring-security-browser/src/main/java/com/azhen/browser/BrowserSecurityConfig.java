@@ -66,7 +66,6 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 				 .maxSessionsPreventsLogin(securityProperties.getBrowser().getSession().isMaxSessionsPreventsLogin())
 				.expiredSessionStrategy(sessionInformationExpiredStrategy)
 				.and()
-				// TODO 配置登出处理器
 				.and()
 				.logout()
 					.logoutUrl("/leave")
