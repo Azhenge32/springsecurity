@@ -3,14 +3,12 @@
  */
 package com.azhen.core.validate.core;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 
-/**
- * @author zhailiang
- *
- */
-public class ValidateCode {
+
+public class ValidateCode implements Serializable {
 	
 	private String code;
 	

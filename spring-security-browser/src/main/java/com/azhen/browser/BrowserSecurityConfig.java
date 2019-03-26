@@ -1,74 +1,98 @@
 package com.azhen.browser;
 
-import com.azhen.browser.authentication.MyAuthenctiationFailureHandler;
-import com.azhen.browser.authentication.MyAuthenticationSuccessHandler;
+import com.azhen.core.authentication.AbstractChannelSecurityConfig;
+import com.azhen.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
+import com.azhen.core.properties.SecurityConstants;
 import com.azhen.core.properties.SecurityProperties;
-import com.azhen.core.validate.core.ValidateCodeFilter;
+import com.azhen.core.validate.core.ValidateCodeSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
+import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.sql.DataSource;
 
-import static com.azhen.core.properties.SecurityConstants.*;
-
 @Configuration
-public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
+public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 	@Autowired
 	private SecurityProperties securityProperties;
-	@Autowired
-	private MyAuthenticationSuccessHandler authenticationSuccessHandler;
-	@Autowired
-	private MyAuthenctiationFailureHandler authenctiationFailureHandler;
-	@Autowired
-	private ValidateCodeFilter validateCodeFilter;
-	@Autowired
-	private UserDetailsService userDetailsService;
+
 	@Autowired
 	private DataSource dataSource;
 
-	public PersistentTokenRepository persistentTokenRepository() {
-		JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
-		tokenRepository.setDataSource(dataSource);
-		tokenRepository.setCreateTableOnStartup(true);
-		return tokenRepository;
-	}
+	@Autowired
+	private UserDetailsService userDetailsService;
+
+	@Autowired
+	private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+
+	@Autowired
+	private ValidateCodeSecurityConfig validateCodeSecurityConfig;
+
+	@Autowired
+	private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
+
+	@Autowired
+	private InvalidSessionStrategy invalidSessionStrategy;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
-				.formLogin()
-					.loginPage(DEFAULT_UNAUTHENTICATION_URL)
-					.loginProcessingUrl(DEFAULT_LOGIN_PROCESSING_URL_FORM)
-					.successHandler(authenticationSuccessHandler)
-					.failureHandler(authenctiationFailureHandler)
-					.and()
+
+		applyPasswordAuthenticationConfig(http);
+
+		http.apply(validateCodeSecurityConfig)
+				.and()
+				.apply(smsCodeAuthenticationSecurityConfig)
+				.and()
 				.rememberMe()
-					.tokenRepository(persistentTokenRepository())
-					.tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
-					.userDetailsService(userDetailsService)
+				.tokenRepository(persistentTokenRepository())
+				.tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
+				.userDetailsService(userDetailsService)
+				.and()
+				.sessionManagement()
+				.invalidSessionStrategy(invalidSessionStrategy)
+				  .maximumSessions(securityProperties.getBrowser().getSession().getMaximumSessions())
+				 .maxSessionsPreventsLogin(securityProperties.getBrowser().getSession().isMaxSessionsPreventsLogin())
+				.expiredSessionStrategy(sessionInformationExpiredStrategy)
+				.and()
 				.and()
 				.authorizeRequests()
-				.antMatchers(DEFAULT_UNAUTHENTICATION_URL, securityProperties.getBrowser().getLoginPage(),
-						DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*").permitAll()
+				.antMatchers(
+						SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
+						SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
+						securityProperties.getBrowser().getLoginPage(),
+						SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*",
+						securityProperties.getBrowser().getSignUpUrl(),
+						securityProperties.getBrowser().getSession().getSessionInvalidUrl()+".json",
+						securityProperties.getBrowser().getSession().getSessionInvalidUrl()+".html",
+						"/user/regist")
+				.permitAll()
 				.anyRequest()
 				.authenticated()
 				.and()
 				.csrf().disable();
 	}
 
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
+	@Bean
+	public PersistentTokenRepository persistentTokenRepository() {
+		JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+		tokenRepository.setDataSource(dataSource);
+		// tokenRepository.(true);
+		return tokenRepository;
+	}
 
 }

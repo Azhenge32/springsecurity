@@ -14,7 +14,7 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
+           <dependency>
                 <groupId>io.spring.platform</groupId>
                 <artifactId>platform-bom</artifactId>
                 <version>Brussels-SR4</version>
@@ -27,6 +27,12 @@
                 <version>Dalston.SR2</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>8.0.15</version>
+                <scope>pom</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
