@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.azhen.browser.support;
+package com.azhen.core.support;
 
 public class SimpleResponse {
 	

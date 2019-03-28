@@ -19,7 +19,7 @@ import com.azhen.core.properties.SecurityProperties;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import com.azhen.browser.support.SimpleResponse;
+import com.azhen.core.support.SimpleResponse;
 /**
  * @author zhailiang
  *

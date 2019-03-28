@@ -34,6 +34,12 @@
                 <version>8.0.15</version>
                 <scope>pom</scope>
             </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.16.20</version>
+                <scope>pom</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

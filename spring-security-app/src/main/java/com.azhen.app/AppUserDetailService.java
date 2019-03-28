@@ -1,4 +1,4 @@
-package com.azhen.browser;
+package com.azhen.app;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class MyUserDetailService implements UserDetailsService,SocialUserDetailsService {
+public class AppUserDetailService implements UserDetailsService,SocialUserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -26,7 +26,7 @@ public class MyUserDetailService implements UserDetailsService,SocialUserDetails
         String passwordOld = "$2a$10$d64eRlpHD3j7GPbX5iXnuuGHA0oCDlH12vk.ju5whMkG8bxYtrQP.";
         return new User(username, passwordOld,
                 true, true, true, true,
-                AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+                AuthorityUtils.commaSeparatedStringToAuthorityList("admin,ROLE_USER"));
     }
 
     @Override

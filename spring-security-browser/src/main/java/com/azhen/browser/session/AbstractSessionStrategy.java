@@ -3,7 +3,7 @@
  */
 package com.azhen.browser.session;
 
-import com.azhen.browser.support.SimpleResponse;
+import com.azhen.core.support.SimpleResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;

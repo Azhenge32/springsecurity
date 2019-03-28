@@ -1,11 +1,11 @@
 /**
  * 
  */
-package com.azhen.browser.authentication;
+package com.azhen.app.authentication;
 
-import com.azhen.core.support.SimpleResponse;
 import com.azhen.core.properties.LoginType;
 import com.azhen.core.properties.SecurityProperties;
+import com.azhen.core.support.SimpleResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
