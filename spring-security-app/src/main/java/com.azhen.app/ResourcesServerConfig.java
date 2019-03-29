@@ -4,6 +4,7 @@ import com.azhen.core.authentication.AbstractChannelSecurityConfig;
 import com.azhen.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.azhen.core.properties.SecurityConstants;
 import com.azhen.core.properties.SecurityProperties;
+import com.azhen.core.validate.core.ValidateCodeSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,10 +17,13 @@ public class ResourcesServerConfig extends AbstractChannelSecurityConfig {
     private SecurityProperties securityProperties;
     @Autowired
     private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+    @Autowired
+    private ValidateCodeSecurityConfig validateCodeSecurityConfig;
     @Override
     public void configure(HttpSecurity http) throws Exception {
         applyPasswordAuthenticationConfig(http);
-        http
+        http.apply(validateCodeSecurityConfig)
+                .and()
             .apply(smsCodeAuthenticationSecurityConfig)
             .and()
             .authorizeRequests()
